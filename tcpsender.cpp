@@ -21,7 +21,7 @@ void TcpSender::doConnect()
 
 //    QHostAddress subCamAddr("192.168.0.10");
 //    socket->connectToHost(subCamAddr, 80);
-    socket->connectToHost("google.com", 80);
+//    socket->connectToHost("google.com", 80);
 
     if(!socket->waitForConnected(5000)) {
         qDebug() << "Error: " << socket->errorString();

@@ -2,18 +2,17 @@
 
 #include <QDebug>
 
-UdpReciever::UdpReciever(Godzilla *god)
+#include "godzilla.h"
+
+UdpReciever::UdpReciever(QObject *parent, quint16 port) : QObject(parent)
 {
     // create a QUDP socket
-    socket = new QUdpSocket(this);
+    _socket = new QUdpSocket(this);
 
     // bind to an address and port
-    socket -> bind(QHostAddress::AnyIPv4, 1234); // アドレスは何に設定？？
+    _socket -> bind(QHostAddress::AnyIPv4, port); // アドレスは何に設定？？
 
-    _god = god;
-
-    connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
-    connect(_god, SIGNAL(recvDataSignal(QByteArray)), _god, SLOT(calcSubCamPTZData(QByteArray)));
+    connect(_socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
 }
 
 
@@ -23,23 +22,24 @@ void UdpReciever::HelloUDP()
     QByteArray Data;
     Data.append("Hello from UDP");
 
-    socket -> writeDatagram(Data, QHostAddress::Broadcast, 1234);
+    _socket -> writeDatagram(Data, QHostAddress::Broadcast, 1234);
 }
 
 void UdpReciever::readyRead()
 {
     // when data comes in
     QByteArray buffer;
-    buffer.resize(static_cast<int>(socket->pendingDatagramSize()));
+    buffer.resize(static_cast<int>(_socket->pendingDatagramSize()));
 
     QHostAddress sender;
     quint16 senderPort;
 
-    socket -> readDatagram(buffer.data(), buffer.size(), &sender, &senderPort);
+    _socket -> readDatagram(buffer.data(), buffer.size(), &sender, &senderPort);
 
     qDebug() << "Message from: " << sender.toString();
     qDebug() << "Message port: " << senderPort;
     qDebug() << "Message: " << buffer;
 
-    _god->emitRecvDataSignal(buffer);
+    Godzilla *parent = static_cast<Godzilla*>(this->parent());
+    parent->emitRecvDataSignal(buffer);
 }

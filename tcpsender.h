@@ -5,15 +5,15 @@
 #include <QTcpSocket>
 #include <QAbstractSocket>
 #include <QHostAddress>
+#include <QHostInfo>
 
 #include "mainwindow.h"
-#include "godzilla.h"
 
 class TcpSender : public QObject
 {
     Q_OBJECT
 public:
-    explicit TcpSender(Godzilla *god);
+    explicit TcpSender(QObject *parent = nullptr, const QString dest = "192.168.0.10");
 
     void doConnect();
 
@@ -31,11 +31,12 @@ public slots:
         emit sendDataSignal(sendData);
     }
 
-    void sendData(QByteArray sendData);
+    void sendData(QByteArray sendCmd);
 
 private:
-    QTcpSocket *socket;
-    Godzilla *_god;
+    QTcpSocket *_socket;
+    QHostAddress _ipAddr;
+    QByteArray _ipAddrArray;
 };
 
 #endif // TCPSENDER_H

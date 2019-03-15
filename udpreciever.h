@@ -5,21 +5,19 @@
 #include <QUdpSocket>
 
 #include "mainwindow.h"
-#include "godzilla.h"
 
 class UdpReciever : public QObject
 {
     Q_OBJECT
 public:
-    explicit UdpReciever(Godzilla *god);
+    explicit UdpReciever(QObject *parent = nullptr, quint16 port = 1234);
     void HelloUDP();
 
 public slots:
     void readyRead();
 
 private:
-    QUdpSocket *socket;
-    Godzilla *_god;
+    QUdpSocket *_socket;
 };
 
 #endif // UDPRECIEVER_H

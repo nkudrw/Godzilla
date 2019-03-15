@@ -2,37 +2,36 @@
 
 #include <QDebug>
 
-TcpSender::TcpSender(Godzilla *god)
+TcpSender::TcpSender(QObject *parent, const QString dest) : QObject (parent)
 {
-    _god = god;
+    _ipAddr.setAddress(dest);
+    _ipAddrArray = dest.toUtf8();
 }
 
 void TcpSender::doConnect()
 {
     // create a QTCP socket
-    socket = new QTcpSocket(this);
+    _socket = new QTcpSocket(this);
 
-    connect(socket, SIGNAL(connected()), this, SLOT(connected()));
-    connect(socket, SIGNAL(disconnected()),this, SLOT(disconnected()));
-    connect(socket, SIGNAL(bytesWritten(qint64)), this, SLOT(bytesWritten(qint64)));
-    connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
+    connect(_socket, SIGNAL(connected()), this, SLOT(connected()));
+    connect(_socket, SIGNAL(disconnected()),this, SLOT(disconnected()));
+    connect(_socket, SIGNAL(bytesWritten(qint64)), this, SLOT(bytesWritten(qint64)));
+    connect(_socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
+    connect(this, SIGNAL(sendDataSignal(QByteArray)), this, SLOT(sendData(QByteArray)));
 
     qDebug() << "connecting...";
 
-//    QHostAddress subCamAddr("192.168.0.10");
-//    socket->connectToHost(subCamAddr, 80);
-//    socket->connectToHost("google.com", 80);
+    _socket->connectToHost(_ipAddr, 80);
+//    _socket->connectToHost("google.com", 80);
 
-    if(!socket->waitForConnected(5000)) {
-        qDebug() << "Error: " << socket->errorString();
+    if(!_socket->waitForConnected(5000)) {
+        qDebug() << "Tcpsender Error: " << _socket->errorString();
     }
 }
 
 void TcpSender::connected()
 {
     qDebug() << "connected...";
-
-    socket->write("HEAD / HTTP/1.1\r\n\r\n\r\n\r\n");
 }
 
 void TcpSender::disconnected()
@@ -50,11 +49,17 @@ void TcpSender::readyRead()
     qDebug() << "reading...";
 
     // read the data from the socket
-    qDebug() << socket->readAll();
+    qDebug() << _socket->readAll();
 }
 
-void TcpSender::sendData(QByteArray sendData)
+void TcpSender::sendData(QByteArray sendCmd)
 {
-    socket->write("HEAD / HTTP/1.1\r\n\r\n\r\n\r\n"); // テスト用
+    QByteArray sendData; // TODO:中身の仕様確認必要(Connection: closeでReplyが返ってくる)
+    sendData.append("GET /cgi-bin/" + sendCmd + " HTTP/1.1\r\n");
+    sendData.append("Connection: Keep_Alive\r\n");
+    sendData.append("Host: " + _ipAddrArray + "\r\n");
+    sendData.append("Accept: */*\r\n\r\n");
+
+    _socket->write(sendData);
 }
 

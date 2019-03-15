@@ -14,12 +14,11 @@ int main(int argc, char *argv[])
     w->show();
 
     Godzilla *god = new Godzilla();
+    god->createUdpSocket(1234); // 引数として受信ポート番号を指定
+    god->createTcpSocket("192.168.0.10"); // 引数として送信先IPアドレスを指定
 
-    UdpReciever *client = new UdpReciever(god); // メインカメラからの更新通知受信用
-    client->HelloUDP(); // テスト用関数 //削除予定
-
-    TcpSender *server = new TcpSender(god);
-    server->doConnect();
+//    TcpSender *server = new TcpSender(god);
+//    server->doConnect();
 
     return a.exec();
 }

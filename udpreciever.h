@@ -11,7 +11,7 @@ class UdpReciever : public QObject
     Q_OBJECT
 public:
     explicit UdpReciever(QObject *parent = nullptr, quint16 port = 1234);
-    void HelloUDP();
+    void sendDummyData();
 
 public slots:
     void readyRead();

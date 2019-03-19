@@ -17,10 +17,11 @@ UdpReciever::UdpReciever(QObject *parent, quint16 port) : QObject(parent)
 
 
 // テスト用関数
-void UdpReciever::HelloUDP()
+void UdpReciever::sendDummyData()
 {
     QByteArray Data;
-    Data.append("Hello from UDP");
+    // ダミーの更新通知（カメラID:FF, Pan:175°, Tilt:-30°,　Flip:1,  Zoom:555 ,Focus:FFF ,Iris:555）
+    Data.append("0xD1/0xFF/0x57/0x80/0x00/0xF1/0x00/0x00/0x5A/0x00/0x00/0x00/0x00/0x00/0x00/0x00/0x00/0x00/0x00/0x00/0x00/0x05/0x55/0x00/0x0F/0xFF/0x05/0x55/0x8C");
 
     _socket -> writeDatagram(Data, QHostAddress::Broadcast, 1234);
 }
@@ -41,5 +42,6 @@ void UdpReciever::readyRead()
     qDebug() << "Message: " << buffer;
 
     Godzilla *parent = static_cast<Godzilla*>(this->parent());
-    parent->emitRecvDataSignal(buffer);
+//    parent->emitRecvDataSignal(buffer);
+    parent->recvUpdateNotice(buffer);
 }

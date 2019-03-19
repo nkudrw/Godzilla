@@ -15,10 +15,7 @@ int main(int argc, char *argv[])
 
     Godzilla *god = new Godzilla();
     god->createUdpSocket(1234); // 引数として受信ポート番号を指定
-    god->createTcpSocket("192.168.0.10"); // 引数として送信先IPアドレスを指定
-
-//    TcpSender *server = new TcpSender(god);
-//    server->doConnect();
+    god->addSubCam("192.168.0.10"); // 引数として送信先IPアドレスを指定
 
     return a.exec();
 }

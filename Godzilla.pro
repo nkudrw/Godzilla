@@ -30,13 +30,16 @@ SOURCES += \
         mainwindow.cpp \
     udpreciever.cpp \
     godzilla.cpp \
-    tcpsender.cpp
+    tcpsender.cpp \
+    subcam.cpp
 
 HEADERS += \
         mainwindow.h \
     udpreciever.h \
     godzilla.h \
-    tcpsender.h
+    tcpsender.h \
+    subcam.h \
+    godtypedef.h
 
 FORMS += \
         mainwindow.ui

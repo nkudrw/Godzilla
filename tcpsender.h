@@ -14,24 +14,16 @@ class TcpSender : public QObject
     Q_OBJECT
 public:
     explicit TcpSender(QObject *parent = nullptr, const QString dest = "192.168.0.10");
-
     void doConnect();
+    void sendData(QByteArray sendCmd);
 
 signals:
-    void sendDataSignal(QByteArray sendData);
 
 public slots:
     void connected();
     void disconnected();
     void bytesWritten(qint64 bytes);
     void readyRead();
-
-    void emitSendDataSignal(QByteArray sendData)
-    {
-        emit sendDataSignal(sendData);
-    }
-
-    void sendData(QByteArray sendCmd);
 
 private:
     QTcpSocket *_socket;

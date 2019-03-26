@@ -60,7 +60,7 @@ bool Godzilla::parseUpdateNotice(QByteArray recvData)
 }
 
 /*          parseUpdateNotice
- * @brief   Focus値から距離を算出
+ * @brief   Focus値から距離を算出(メートル)
  * @param
  * @return  正常終了 true, 異常終了 false
  */

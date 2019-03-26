@@ -34,7 +34,7 @@ void Godzilla::addSubCam(const QString ipaddr)
 void Godzilla::recvUpdateNotice(QByteArray recvData)
 {
     _mainCamPTZData = recvData;
-    qDebug() << "mainCamPTZData: " << _mainCamPTZData;
+    qDebug() << "mainCamPTZData" << _mainCamPTZData.toHex(0);
 
     if(!parseUpdateNotice(recvData)) {
         qDebug() << "Update Notice is Invalid.";

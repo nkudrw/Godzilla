@@ -19,9 +19,16 @@ UdpReciever::UdpReciever(QObject *parent, quint16 port) : QObject(parent)
 // テスト用関数
 void UdpReciever::sendDummyData()
 {
-    QByteArray Data;
     // ダミーの更新通知（カメラID:FF, Pan:175°, Tilt:-30°,　Flip:1,  Zoom:555 ,Focus:FFF ,Iris:555）
-    Data.append("0xD1/0xFF/0x57/0x80/0x00/0xF1/0x00/0x00/0x5A/0x00/0x00/0x00/0x00/0x00/0x00/0x00/0x00/0x00/0x00/0x00/0x00/0x05/0x55/0x00/0x0F/0xFF/0x05/0x55/0x8C");
+    char testData[] = {
+        '\xd1', '\xff', '\x57', '\x80', '\x00', '\xf1', '\x00', '\x00',
+        '\x5a', '\x00', '\x00', '\x00', '\x00', '\x00', '\x00', '\x00',
+        '\x00', '\x00', '\x00', '\x00', '\x00', '\x05', '\x55', '\x00',
+        '\x0f', '\xff', '\x05', '\x55', '\x8c'
+    };
+
+    QByteArray Data = QByteArray::fromRawData(testData, sizeof(testData));
+
 
     _socket -> writeDatagram(Data, QHostAddress::Broadcast, 1234);
 }
@@ -39,7 +46,7 @@ void UdpReciever::readyRead()
 
     qDebug() << "Message from: " << sender.toString();
     qDebug() << "Message port: " << senderPort;
-    qDebug() << "Message: " << buffer;
+    qDebug() << "Message: " << buffer.toHex(0);
 
     Godzilla *parent = static_cast<Godzilla*>(this->parent());
 //    parent->emitRecvDataSignal(buffer);

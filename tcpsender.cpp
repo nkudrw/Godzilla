@@ -58,6 +58,7 @@ void TcpSender::sendData(QByteArray sendCmd)
     sendData.append("GET /cgi-bin/" + sendCmd + " HTTP/1.1\r\n");
     sendData.append("Connection: Keep_Alive\r\n");
     sendData.append("Host: " + _ipAddrArray + "\r\n");
+    sendData.append("Authorization: Basic YWRtaW46MTIzNDU=\r\n");
     sendData.append("Accept: */*\r\n\r\n");
 
     _socket->write(sendData);

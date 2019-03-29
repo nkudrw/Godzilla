@@ -4,7 +4,6 @@
 #include <QObject>
 #include <QUdpSocket>
 
-#include "mainwindow.h"
 
 class UdpReciever : public QObject
 {

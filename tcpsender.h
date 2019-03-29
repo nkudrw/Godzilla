@@ -7,7 +7,6 @@
 #include <QHostAddress>
 #include <QHostInfo>
 
-#include "mainwindow.h"
 
 class TcpSender : public QObject
 {

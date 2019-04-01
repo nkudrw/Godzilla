@@ -9,8 +9,11 @@ ApplicationWindow {
     visible: true
     width: 640
     height: 480
-    color: "#303030"
     Material.accent: Material.Blue
+    Material.theme: Material.Light
+    Material.foreground: Material.Grey
+    Material.primary: Material.Blue
+
     title: qsTr("Godzilla")
 
     Grid {
@@ -19,66 +22,121 @@ ApplicationWindow {
         y: 116
         width: 370
         height: 249
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+        spacing: 28
         flow: Grid.LeftToRight
-        spacing: 20
         rows: 3
         columns: 2
 
-        Text {
-            id: element
-            width: 116
-            height: 47
-            color: "#fbfbfb"
-            text: qsTr("PORT: ")
-            verticalAlignment: Text.AlignVCenter
-            bottomPadding: -4
-            horizontalAlignment: Text.AlignRight
-            font.pixelSize: 18
+        Grid {
+            rows: 2
+            columns: 2
+            anchors.horizontalCenter: parent.horizontalCenter
+            spacing: 10
+
+            Text {
+                id: element
+                width: 75
+                height: 47
+                text: qsTr("Main Camera")
+                font.family: "MS UI Gothic"
+                verticalAlignment: Text.AlignVCenter
+                font.pixelSize: 12
+            }
+
+            TextField {
+                id: textField1
+                width: 176
+                height: 47
+                bottomPadding: 18
+                topPadding: 13
+                placeholderText: "Port"
+
+            }
+
+            Text {
+                id: element2
+                width: 75
+                height: 47
+                text: qsTr("Sub Camera")
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            TextField {
+                id: textField2
+                width: 176
+                height: 47
+                text: qsTr("192.168.")
+                bottomPadding: 18
+                topPadding: 13
+            }
         }
 
-        TextField {
-            id: textField1
-            width: 176
-            height: 47
-            text: qsTr("")
+
+
+
+
+
+        Button {
+            id: button
+            text: qsTr("Connect")
+            anchors.verticalCenterOffset: 23
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            transformOrigin: Item.Center
+            checkable: false
+            highlighted: true
+
+            focusPolicy: Qt.WheelFocus
         }
 
 
 
-
-        Text {
-            id: element3
-            width: 116
-            height: 47
-            color: "#fbfbfb"
-            text: qsTr("IP: ")
-            leftPadding: -2
-            font.family: "Verdana"
-            verticalAlignment: Text.AlignVCenter
-            font.pixelSize: 18
-            horizontalAlignment: Text.AlignRight
-        }
-
-        TextField {
-            id: textField
-            width: 176
-            height: 47
-            text: qsTr("")
-        }
 
     }
 
-    Button {
-        id: button
-        x: 263
-        y: 253
-        text: qsTr("Connect")
-        focusPolicy: Qt.WheelFocus
-        anchors.horizontalCenter: grid.horizontalCenter
+    Pane {
+        id: pane1
+        x: 111
+        y: 74
+        width: 418
+        height: 307
+        z: -1
+
+        Material.elevation: 6
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
     }
 
+
+
+
+
+
+
+
 }
-/*##^## Designer {
-    D{i:0;autoSize:true;height:480;width:640}D{i:3;anchors_height:47;anchors_width:176}
-}
- ##^##*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

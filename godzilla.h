@@ -22,9 +22,11 @@ private:
     UdpReciever *_udp;
     QVector<SubCam*> _subcam;
     LensInfo   _lensInfo;
+    Location   _TargetPosi;
 
     bool parseUpdateNotice(QByteArray recvData);
-    bool calcDistFromFucus();
+    bool calcDistFromFucus(int awFocus);
+    bool calcTargetPosi();
 
 };
 

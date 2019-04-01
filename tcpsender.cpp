@@ -17,7 +17,6 @@ void TcpSender::doConnect()
     connect(_socket, SIGNAL(disconnected()),this, SLOT(disconnected()));
     connect(_socket, SIGNAL(bytesWritten(qint64)), this, SLOT(bytesWritten(qint64)));
     connect(_socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
-    connect(this, SIGNAL(sendDataSignal(QByteArray)), this, SLOT(sendData(QByteArray)));
 
     qDebug() << "connecting...";
 

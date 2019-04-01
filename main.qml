@@ -78,3 +78,7 @@ ApplicationWindow {
     }
 
 }
+/*##^## Designer {
+    D{i:0;autoSize:true;height:480;width:640}D{i:3;anchors_height:47;anchors_width:176}
+}
+ ##^##*/

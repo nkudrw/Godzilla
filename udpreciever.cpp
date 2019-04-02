@@ -1,5 +1,6 @@
 #include "udpreciever.h"
 
+#include <unistd.h>
 #include <QDebug>
 
 #include "godzilla.h"
@@ -44,11 +45,16 @@ void UdpReciever::readyRead()
 
     _socket -> readDatagram(buffer.data(), buffer.size(), &sender, &senderPort);
 
-    qDebug() << "Message from: " << sender.toString();
-    qDebug() << "Message port: " << senderPort;
-    qDebug() << "Message: " << buffer.toHex(0);
+    // デバッグ用　更新通知の受信60回に1回だけ処理
+    static int i = 0;
+    ++i;
+    if(i > 60) {
+        qDebug() << "Message from: " << sender.toString();
+        qDebug() << "Message port: " << senderPort;
+        qDebug() << "Message: " << buffer.toHex(0);
 
-    Godzilla *parent = static_cast<Godzilla*>(this->parent());
-//    parent->emitRecvDataSignal(buffer);
-    parent->recvUpdateNotice(buffer);
+        Godzilla *parent = static_cast<Godzilla*>(this->parent());
+        parent->recvUpdateNotice(buffer);
+        i = 0;
+    }
 }

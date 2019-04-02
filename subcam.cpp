@@ -10,7 +10,7 @@
 SubCam::SubCam(QObject *parent, const QString dest) : QObject (parent)
 {
     _tcp = new TcpSender(this, dest);
-    _tcp->doConnect();
+//    _tcp->doConnect(); デバッグ用にコメントアウト
 }
 
 /*          recvMainCamData
@@ -20,6 +20,7 @@ void SubCam::recvMainCamData(LensInfo mainCam, Location TagetPosi)
 {
     _mainCam = mainCam;
     _TargetPosi = TagetPosi;
+    _tcp->doConnect(); // デバッグ用にここに処理追加
 
     if(!calcSubCamPosi()) {
         qDebug() << "Can't Calculate the Subcam Position.";
@@ -60,7 +61,7 @@ bool SubCam::calcSubCamPosi()
 bool SubCam::calcSubCamAngle()
 {
     double temppan;
-    temppan = atan((_TargetPosi.x - _SubcamPosi.x)/(_TargetPosi.y - _SubcamPosi.y));
+    temppan = atan((_TargetPosi.y - _SubcamPosi.y)/(_TargetPosi.x - _SubcamPosi.x));
     if(_TargetPosi.x >= _SubcamPosi.x){
         _subCam.pan = 180/M_PI*temppan;
     }else{

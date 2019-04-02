@@ -36,13 +36,16 @@ ApplicationWindow {
             spacing: 10
 
             Text {
-                id: element
+                id: element3
                 width: 75
                 height: 47
                 text: qsTr("Main Camera")
-                font.family: "MS UI Gothic"
+                font.bold: false
+                font.wordSpacing: -0.2
+                style: Text.Normal
                 verticalAlignment: Text.AlignVCenter
-                font.pixelSize: 12
+                font.family: "MS UI Gothic"
+                font.pointSize: 10
             }
 
             TextField {
@@ -59,7 +62,9 @@ ApplicationWindow {
                 id: element2
                 width: 75
                 height: 47
-                text: qsTr("Sub Camera")
+                text: qsTr("Sub  Camera")
+                font.family: "MS UI Gothic"
+                font.pointSize: 10
                 verticalAlignment: Text.AlignVCenter
             }
 
@@ -71,6 +76,7 @@ ApplicationWindow {
                 bottomPadding: 18
                 topPadding: 13
             }
+
         }
 
 

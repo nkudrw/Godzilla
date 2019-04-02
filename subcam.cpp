@@ -61,7 +61,7 @@ bool SubCam::calcSubCamPosi()
 bool SubCam::calcSubCamAngle()
 {
     double temppan;
-    temppan = atan((_TargetPosi.x - _SubcamPosi.x)/(_TargetPosi.y - _SubcamPosi.y));
+    temppan = atan((_TargetPosi.y - _SubcamPosi.y)/(_TargetPosi.x - _SubcamPosi.x));
     if(_TargetPosi.x >= _SubcamPosi.x){
         _subCam.pan = 180/M_PI*temppan;
     }else{

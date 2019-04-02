@@ -27,6 +27,7 @@ private:
     Location   _TargetPosi;
     Location   _SubcamPosi;
     unsigned int _subcam_AWpan;
+    unsigned int _subcam_AWtilt;
 
     bool calcSubCamAngle();
     bool calcSubCamPTZ();

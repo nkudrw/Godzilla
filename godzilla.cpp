@@ -109,5 +109,6 @@ bool Godzilla::calcTargetPosi()
     _TargetPosi.y = _lensInfo.focus * sin(_lensInfo.pan/180*M_PI);
     _TargetPosi.z = _lensInfo.focus * sin(_lensInfo.tilt/180*M_PI);
     qDebug() << "Yposi:" << _TargetPosi.y;
+    qDebug() << "Zposi:" << _TargetPosi.z;
     return true;
 }

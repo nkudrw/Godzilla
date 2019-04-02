@@ -60,7 +60,8 @@ bool SubCam::calcSubCamPosi()
  */
 bool SubCam::calcSubCamAngle()
 {
-    double temppan;
+    double temppan, temptilt;
+    //panの計算
     temppan = atan((_TargetPosi.y - _SubcamPosi.y)/(_TargetPosi.x - _SubcamPosi.x));
     if(_TargetPosi.x >= _SubcamPosi.x){
         _subCam.pan = 180/M_PI*temppan;
@@ -71,7 +72,17 @@ bool SubCam::calcSubCamAngle()
             _subCam.pan = 180/M_PI*temppan + 180;
         }
     }
-    qDebug() << "rad:" << _subCam.pan;
+    _subCam.pan = _subCam.pan - _SubcamPosi.angle;
+    //tiltの計算
+    temptilt = atan((_TargetPosi.z - _SubcamPosi.z)/sqrt(pow(_TargetPosi.y - _SubcamPosi.y, 2)+pow(_TargetPosi.x - _SubcamPosi.x, 2)));
+    _subCam.tilt = 180/M_PI*temptilt;
+/*    if( _TargetPosi.x >= _SubcamPosi.x ){//Todo:1対1対応しない問題
+        _subCam.tilt = 180/M_PI*temptilt;
+    }else{
+        _subCam.tilt = 180/M_PI*temptilt + 180;
+    }*/
+    qDebug() << "rad(pan):" << _subCam.pan;
+    qDebug() << "rad(tilt):" << _subCam.tilt;
     return true;
 }
 
@@ -83,6 +94,7 @@ bool SubCam::calcSubCamAngle()
 bool SubCam::calcSubCamPTZ()
 {
     _subcam_AWpan = static_cast<unsigned int>((0xF8D4-(_subCam.pan+175)*182)/0xF8D4*0xA5EC+0x2D09);//ToDo:計算式再確認
+    _subcam_AWtilt = static_cast<unsigned int>((0xAAA0-(_subCam.tilt+30)*182)/0xAAA0*0x71C7+0x1C71);//ToDo:計算式再確認
     return true;
 }
 
@@ -92,13 +104,12 @@ bool SubCam::calcSubCamPTZ()
  * @return 　コマンドの文字列（/cgi-bin/xxx&res=1のxxxの部分）
  */QByteArray SubCam::createCmdString()
 {
-    unsigned int temp = 0x8000;//ToDo:Tiltも計算する。暫定でtiltは8000固定
     QByteArray temp1, temp2, temp3, temp4;
     temp1 = "aw_ptz?cmd=%23APC";
     if(!num2ascii( _subcam_AWpan, temp2, 4 )){
         qDebug() << "ASCII Exchange Error";
     }
-    if(!num2ascii( temp, temp3, 4 )){
+    if(!num2ascii( _subcam_AWtilt, temp3, 4 )){
         qDebug() << "ASCII Exchange Error";
     }
     temp4 = "&res=1";

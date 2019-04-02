@@ -20,7 +20,7 @@ Godzilla::Godzilla(QObject *parent) : QObject(parent)
 void Godzilla::createUdpSocket(const quint16 port)
 {
     _udp = new UdpReciever(this, port);
-    _udp -> sendDummyData(); // テスト用関数 //削除予定
+    _udp -> sendDummyData(); // テスト用関数 ダミーの更新通知を送信　カメラ未接続の状態でテストする場合に使用
 
 }
 

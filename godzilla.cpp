@@ -105,8 +105,8 @@ bool Godzilla::calcDistFromFucus(int awFocus)
  */
 bool Godzilla::calcTargetPosi()
 {
-    _TargetPosi.x = _lensInfo.focus * cos(_lensInfo.pan/180*M_PI);
-    _TargetPosi.y = _lensInfo.focus * sin(_lensInfo.pan/180*M_PI);
+    _TargetPosi.x = _lensInfo.focus * cos(_lensInfo.tilt/180*M_PI) * cos(_lensInfo.pan/180*M_PI);
+    _TargetPosi.y = _lensInfo.focus * cos(_lensInfo.tilt/180*M_PI) * sin(_lensInfo.pan/180*M_PI);
     _TargetPosi.z = _lensInfo.focus * sin(_lensInfo.tilt/180*M_PI);
     qDebug() << "Yposi:" << _TargetPosi.y;
     qDebug() << "Zposi:" << _TargetPosi.z;

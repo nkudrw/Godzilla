@@ -60,16 +60,17 @@ void Godzilla::recvUpdateNotice(QByteArray recvData)
  */
 bool Godzilla::parseUpdateNotice(QByteArray recvData)
 {
-    int temp_pan, temp_tilt, temp_zoom, temp_focus;
+    int temp_pan, temp_tilt, temp_zoom;
+    unsigned short temp_focus;
 //    _lensInfo.pan = (int(recvData[2])<<16) + 0x0000FF00&(recvData[3]<<8) + recvData[4];
     temp_pan = static_cast<int>((recvData[2]<<16) | (0x0000FF00&(recvData[3]<<8)) | (0x000000FF&(recvData[4])));
     temp_tilt = static_cast<int>((recvData[5]<<16) | (0x0000FF00&(recvData[6]<<8)) | (0x000000FF&(recvData[7])));
     temp_zoom = static_cast<int>((recvData[20]<<16) | (0x0000FF00&(recvData[21]<<8)) | (0x000000FF&(recvData[22])));
-    temp_focus = static_cast<int>((recvData[23]<<16) | (0x0000FF00&(recvData[24]<<8)) | (0x000000FF&(recvData[25])));
+    temp_focus = static_cast<unsigned short>((recvData[23]<<16) | (0x0000FF00&(recvData[24]<<8)) | (0x000000FF&(recvData[25])));
     _lensInfo.iris = static_cast<int>((0x0000FF00&(recvData[26]<<8)) | (0x000000FF&(recvData[27])));//とりあえず使わないので放置
 
-    _lensInfo.pan = double(temp_pan)/0x00008000;
-    _lensInfo.tilt = double(temp_tilt)/0x00008000;
+    _lensInfo.pan = double(temp_pan)/0x00008000;//Free-Dの値を角度(°)へ変換
+    _lensInfo.tilt = double(temp_tilt)/0x00008000;//Free-Dの値を角度(°)へ変換
     _lensInfo.zoom = temp_zoom;//とりあえず使わないので放置
 
 
@@ -98,7 +99,7 @@ bool Godzilla::calcDistFromFucus(unsigned short awFocus)
 	unsigned short	dist_tbl, focus_tbl;
 	unsigned short	dist_tbl_next, focus_tbl_next;
 	unsigned char	cnt;
-	unsigned char	cnt_approx;
+    unsigned char	cnt_approx = 0;
 	const unsigned char	cnt_max = TABLE_FOCUST_DIST_MAX_C101;
 	
 	/* テーブル内の近似値を検索		*/
@@ -118,12 +119,12 @@ bool Godzilla::calcDistFromFucus(unsigned short awFocus)
 	/* 被写体距離の線形補間計算	*/
 	dist_ret	= dist_tbl + (dist_tbl_next - dist_tbl) * (awFocus - focus_tbl) / (focus_tbl_next - focus_tbl);
 	
-    _lensInfo.focus	= (double)dist_ret;
+    _lensInfo.focus	= double(dist_ret);
     return true;
 }
 
 /*          parseUpdateNotice
- * @brief   Focus値から距離を算出(メートル)
+ * @brief   Focus値から距離を算出(ミリメートル)
  * @param
  * @return  正常終了 true, 異常終了 false
  */

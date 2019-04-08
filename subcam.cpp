@@ -47,7 +47,7 @@ void SubCam::recvMainCamData(LensInfo mainCam, Location TagetPosi)
 bool SubCam::calcSubCamPosi()
 {
     _SubcamPosi.x = 0;//本来はキャリブレーションで求める
-    _SubcamPosi.y = 1;
+    _SubcamPosi.y = 1000;
     _SubcamPosi.z = 0;
     _SubcamPosi.angle = 0;
     return true;
@@ -118,6 +118,11 @@ bool SubCam::calcSubCamPTZ()
 //    return "aw_ptz?cmd=%23APC80008000&res=1"; // テスト用
 }
 
+/*          num2ascii
+ * @brief   16進数をchar型に変換
+ * @param
+ * @return  正常終了 true, 異常終了 false
+ */
 bool SubCam::num2ascii(unsigned int num, QByteArray &array, int length){
     int i;
     unsigned int temp;
@@ -125,9 +130,9 @@ bool SubCam::num2ascii(unsigned int num, QByteArray &array, int length){
         temp = num & 0x000F;
         num >>= 4;
         if( temp <= 9 ){
-            array[i-1] = char(temp + '0');
+            array[i-1] = char(temp + '0');//0～9
         }else{
-            array[i-1] = char(temp - 10 + 'A');
+            array[i-1] = char(temp - 10 + 'A');//A～F
         }
     }
     return true;

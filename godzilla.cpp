@@ -88,13 +88,37 @@ bool Godzilla::parseUpdateNotice(QByteArray recvData)
 }
 
 /*          parseUpdateNotice
- * @brief   Focus値から距離を算出(メートル)
- * @param
+ * @brief   Focus値から距離を算出(ミリメートル)
+ * @param	フォーカンス値(0x555～0xFFF)
  * @return  正常終了 true, 異常終了 false
  */
-bool Godzilla::calcDistFromFucus(int awFocus)
+bool Godzilla::calcDistFromFucus(unsigned short awFocus)
 {
-    _lensInfo.focus = 2;//AWコマンドで扱われている0x555～0xFFFの値を[m(メートル)]へ変換お願いします
+	unsigned short	dist_ret;
+	unsigned short	dist_tbl, focus_tbl;
+	unsigned short	dist_tbl_next, focus_tbl_next;
+	unsigned char	cnt;
+	unsigned char	cnt_approx;
+	const unsigned char	cnt_max = TABLE_FOCUST_DIST_MAX_C101;
+	
+	/* テーブル内の近似値を検索		*/
+	for(cnt = 0; cnt < cnt_max; cnt++){
+		focus_tbl		= table_FocusDist_C101[cnt][0];
+		if(focus_tbl > awFocus){
+			cnt_approx	= cnt;
+			break;
+		}
+	}
+	
+	focus_tbl		= table_FocusDist_C101[cnt_approx][0];
+	dist_tbl		= table_FocusDist_C101[cnt_approx][1];
+	focus_tbl_next	= table_FocusDist_C101[cnt_approx+1][0];
+	dist_tbl_next	= table_FocusDist_C101[cnt_approx+1][1];
+	
+	/* 被写体距離の線形補間計算	*/
+	dist_ret	= dist_tbl + (dist_tbl_next - dist_tbl) * (awFocus - focus_tbl) / (focus_tbl_next - focus_tbl);
+	
+    _lensInfo.focus	= (double)dist_ret;
     return true;
 }
 

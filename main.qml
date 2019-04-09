@@ -30,6 +30,7 @@ ApplicationWindow {
         columns: 2
 
         Grid {
+            id: gridinside
             rows: 2
             columns: 2
             anchors.horizontalCenter: parent.horizontalCenter
@@ -49,7 +50,7 @@ ApplicationWindow {
             }
 
             TextField {
-                id: textField1
+                id: port
                 width: 176
                 height: 47
                 bottomPadding: 18
@@ -69,7 +70,7 @@ ApplicationWindow {
             }
 
             TextField {
-                id: textField2
+                id: ipAddress
                 width: 176
                 height: 47
                 text: qsTr("192.168.")
@@ -79,13 +80,8 @@ ApplicationWindow {
 
         }
 
-
-
-
-
-
         Button {
-            id: button
+            id: connect
             text: qsTr("Connect")
             anchors.verticalCenterOffset: 23
             anchors.horizontalCenter: parent.horizontalCenter
@@ -93,8 +89,11 @@ ApplicationWindow {
             transformOrigin: Item.Center
             checkable: false
             highlighted: true
-
             focusPolicy: Qt.WheelFocus
+            onClicked: {
+                god.createUdpSocket(port.text);
+                god.addSubCam(ipAddress.text);
+            }
         }
 
 

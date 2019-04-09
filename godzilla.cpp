@@ -17,19 +17,20 @@ Godzilla::Godzilla(QObject *parent) : QObject(parent)
 /*          createUdpSocket
  * @param   更新通知の受信ポート番号
  */
-void Godzilla::createUdpSocket(const quint16 port)
+Q_INVOKABLE void Godzilla::createUdpSocket(const quint16 port)
 {
     _udp = new UdpReciever(this, port);
     _udp -> sendDummyData(); // テスト用関数 ダミーの更新通知を送信　カメラ未接続の状態でテストする場合に使用
-
+    qDebug() << "port="<<port;
 }
 
 /*          addSubCam
  * @param   ipaddr 追加するSubCamのIPアドレス
  */
-void Godzilla::addSubCam(const QString ipaddr)
+Q_INVOKABLE void Godzilla::addSubCam(const QString ipaddr)
 {
     _subcam.append(new SubCam(this, ipaddr));
+    qDebug() << "ip="<<ipaddr;
 }
 
 /*          recvUpdateNotice

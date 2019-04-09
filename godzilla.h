@@ -13,8 +13,8 @@ class Godzilla : public QObject
     Q_OBJECT
 public:
     explicit Godzilla(QObject *parent = nullptr);
-    void createUdpSocket(const quint16 port = 1234);
-    void addSubCam(const QString ipaddr);
+    Q_INVOKABLE void createUdpSocket(const quint16 port = 1234);
+    Q_INVOKABLE void addSubCam(const QString ipaddr);
     void recvUpdateNotice(QByteArray recvData);
 
 private:

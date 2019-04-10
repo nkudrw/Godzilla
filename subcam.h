@@ -26,13 +26,15 @@ private:
     QByteArray _cmd;
     Location   _TargetPosi;
     Location   _SubcamPosi;
-    unsigned int _subcam_AWpan;
-    unsigned int _subcam_AWtilt;
+    unsigned short _subcam_AWpan;
+    unsigned short _subcam_AWtilt;
+    unsigned short _subcam_AWzoom;
 
     bool calcSubCamAngle();
     bool calcSubCamPTZ();
     bool calcSubCamPosi();
-    QByteArray createCmdString();
+    QByteArray createCmdStrAPC();
+    QByteArray createCmdStrAXZ();
     bool num2ascii(unsigned int num, QByteArray &array, int length);
 };
 

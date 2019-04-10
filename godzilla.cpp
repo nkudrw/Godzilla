@@ -109,20 +109,25 @@ bool Godzilla::calcDistFromFucus(unsigned short awFocus)
 	for(cnt = 0; cnt < cnt_max; cnt++){
 		focus_tbl		= table_FocusDist_C101[cnt][0];
 		if(focus_tbl > awFocus){
-			cnt_approx	= cnt;
+			cnt_approx	= cnt - 1;
 			break;
 		}
 	}
 	
-	focus_tbl		= table_FocusDist_C101[cnt_approx][0];
-	dist_tbl		= table_FocusDist_C101[cnt_approx][1];
-	focus_tbl_next	= table_FocusDist_C101[cnt_approx+1][0];
-	dist_tbl_next	= table_FocusDist_C101[cnt_approx+1][1];
+	if(cnt_approx >= (cnt_max - 1)){
+		/* テーブルの最後はオーバーフローが発生するため	*/
+		dist_ret		= table_FocusDist_C101[cnt_max - 1][1];
+	}
+	else{
+		focus_tbl		= table_FocusDist_C101[cnt_approx][0];
+		dist_tbl		= table_FocusDist_C101[cnt_approx][1];
+		focus_tbl_next	= table_FocusDist_C101[cnt_approx+1][0];
+		dist_tbl_next	= table_FocusDist_C101[cnt_approx+1][1];
+		/* 被写体距離の線形補間計算	*/
+		dist_ret	= dist_tbl + (dist_tbl_next - dist_tbl) * (awFocus - focus_tbl) / (focus_tbl_next - focus_tbl);
+	}
 	
-	/* 被写体距離の線形補間計算	*/
-	dist_ret	= dist_tbl + (dist_tbl_next - dist_tbl) * (awFocus - focus_tbl) / (focus_tbl_next - focus_tbl);
-	
-    _lensInfo.focus	= double(dist_ret);
+    _lensInfo.focus	= (double)dist_ret;
     return true;
 }
 

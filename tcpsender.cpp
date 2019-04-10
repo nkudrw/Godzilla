@@ -53,9 +53,10 @@ void TcpSender::readyRead()
 
 void TcpSender::sendData(QByteArray sendCmd)
 {
-    QByteArray sendData; // TODO:中身の仕様確認必要(Connection: closeでReplyが返ってくる)
+    doConnect();
+
+    QByteArray sendData;
     sendData.append("GET /cgi-bin/" + sendCmd + " HTTP/1.1\r\n");
-    sendData.append("Connection: Keep_Alive\r\n");
     sendData.append("Host: " + _ipAddrArray + "\r\n");
     sendData.append("Authorization: Basic YWRtaW46MTIzNDU=\r\n");
     sendData.append("Accept: */*\r\n\r\n");

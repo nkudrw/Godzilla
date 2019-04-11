@@ -75,6 +75,11 @@ bool SubCam::calcSubCamAngle()
         }
     }
     _subCam.pan = _subCam.pan - _SubcamPosi.angle;
+	if( _subCam.pan > 180 ){
+		_subCam.pan = _subCam.pan - 360;
+	}else if( _subCam.pan < -180 ){
+		_subCam.pan = _subCam.pan + 360;
+	}
     //tiltの計算
     temptilt = atan((_TargetPosi.z - _SubcamPosi.z)/sqrt(pow(_TargetPosi.y - _SubcamPosi.y, 2)+pow(_TargetPosi.x - _SubcamPosi.x, 2)));
     _subCam.tilt = 180/M_PI*temptilt;
@@ -102,8 +107,8 @@ bool SubCam::calcSubCamAngle()
  */
 bool SubCam::calcSubCamPTZ()
 {
-    _subcam_AWpan = static_cast<unsigned short>((0xF8D4-(_subCam.pan+175)*182)/0xF8D4*0xA5EC+0x2D09);//ToDo:計算式再確認
-    _subcam_AWtilt = static_cast<unsigned short>((0xAAA0-(_subCam.tilt+30)*182)/0xAAA0*0x71C7+0x1C71);//ToDo:計算式再確認
+    _subcam_AWpan = static_cast<unsigned short>((0xF8D4-(_subCam.pan+175)*182)/0xF8D4*0xA5EC+0x2D09);//UE150の計算式
+    _subcam_AWtilt = static_cast<unsigned short>((0xAAA0-(_subCam.tilt+30)*182)/0xAAA0*0x71C7+0x1C71);//UE150の計算式
     for(int cnt=0; cnt<ZOOM_TABLE_SIZE; cnt++){
         if( table_Zoom_Angle[cnt][1] <= _subCam.zoom ){
             _subcam_AWzoom =static_cast<unsigned short>(table_Zoom_Angle[cnt][0]);

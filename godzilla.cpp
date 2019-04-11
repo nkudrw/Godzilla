@@ -101,9 +101,9 @@ bool Godzilla::calcDistFromFucus(unsigned short awFocus)
 	unsigned short	dist_ret;
 	unsigned short	dist_tbl, focus_tbl;
 	unsigned short	dist_tbl_next, focus_tbl_next;
-	unsigned char	cnt;
-    unsigned char	cnt_approx = 0;
+    unsigned char	cnt;
 	const unsigned char	cnt_max = TABLE_FOCUST_DIST_MAX_C101;
+    unsigned char	cnt_approx = cnt_max-1;
 	
 	/* テーブル内の近似値を検索		*/
 	for(cnt = 0; cnt < cnt_max; cnt++){

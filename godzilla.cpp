@@ -17,7 +17,7 @@ Godzilla::Godzilla(QObject *parent) : QObject(parent)
 /*          getMainCamLensInfo
  * @brief   MainCamの現在のLensInfo（PTZF）のGetter
  */
-LensInfo Godzilla::getMainCamLensInfo()
+Q_INVOKABLE LensInfo Godzilla::getMainCamLensInfo()
 {
     return _lensInfo;
 }
@@ -39,6 +39,15 @@ Q_INVOKABLE void Godzilla::addSubCam(const QString ipaddr, double x, double y, d
 {
     _subcam.append(new SubCam(this, ipaddr, x, y, z, angle));
     qDebug() << "ip="<<ipaddr;
+}
+
+/*          getMainCamLensInfo
+ * @brief   camNum番目に登録したSubCamの現在のLensInfo（PTZF）のGetter
+ * @param   camNum サブカメラ番号
+ */
+Q_INVOKABLE LensInfo Godzilla::getSubCamLensInfo(int camNum)
+{
+    return _subcam[camNum]->getSubCamLensInfo();
 }
 
 /*          recvUpdateNotice

@@ -16,6 +16,7 @@ public:
     LensInfo getMainCamLensInfo();
     Q_INVOKABLE void createUdpSocket(const quint16 port = 1234);
     Q_INVOKABLE void addSubCam(const QString ipaddr, double x, double y, double z, double angle);
+    LensInfo getSubCamLensInfo(int camNum);
     void recvUpdateNotice(QByteArray recvData);
 
 private:

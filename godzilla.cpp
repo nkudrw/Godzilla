@@ -144,7 +144,7 @@ bool Godzilla::calcDistFromFucus(unsigned short awFocus)
 		dist_ret	= dist_tbl + (dist_tbl_next - dist_tbl) * (awFocus - focus_tbl) / (focus_tbl_next - focus_tbl);
 	}
 	
-    _lensInfo.focus	= (double)dist_ret;
+    _lensInfo.focus	= static_cast<double>(dist_ret);
     return true;
 }
 

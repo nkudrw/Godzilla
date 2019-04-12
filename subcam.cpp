@@ -5,7 +5,6 @@
 #include "godzilla.h"
 
 #define _USE_MATH_DEFINES
-
 #include <math.h>
 
 SubCam::SubCam(QObject *parent, const QString dest, double x, double y, double z, double angle) : QObject (parent)

@@ -29,7 +29,6 @@ private:
     TcpSender *_tcp;
     LensInfo _mainCamLensInfo;
     LensInfo _subCamLensInfo;
-//    int _angle; //TODO:型修正（適切な型が分からなかったのでとりあえず全部int（六車））
     QByteArray _cmd;
     Location   _targetPosi;
     Location   _subCamPosi;

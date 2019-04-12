@@ -14,6 +14,14 @@ Godzilla::Godzilla(QObject *parent) : QObject(parent)
     _subcam.clear();
 }
 
+/*          getMainCamLensInfo
+ * @brief   MainCamの現在のLensInfo（PTZF）のGetter
+ */
+LensInfo Godzilla::getMainCamLensInfo()
+{
+    return _lensInfo;
+}
+
 /*          createUdpSocket
  * @param   更新通知の受信ポート番号
  */
@@ -50,7 +58,7 @@ void Godzilla::recvUpdateNotice(QByteArray recvData)
     }
 
     for(int i = 0; i < _subcam.size(); ++i) {
-        _subcam[i] -> recvMainCamData(_lensInfo, _TargetPosi);
+        _subcam[i] -> recvMainCamData(_lensInfo, _targetPosi);
     }
 }
 
@@ -138,12 +146,12 @@ bool Godzilla::calcDistFromFucus(unsigned short awFocus)
  */
 bool Godzilla::calcTargetPosi()
 {
-    _TargetPosi.x = _lensInfo.focus * cos(_lensInfo.tilt/180*M_PI) * cos(_lensInfo.pan/180*M_PI);
-    _TargetPosi.y = _lensInfo.focus * cos(_lensInfo.tilt/180*M_PI) * sin(_lensInfo.pan/180*M_PI);
-    _TargetPosi.z = _lensInfo.focus * sin(_lensInfo.tilt/180*M_PI);
-//    qDebug() << "TargetXposi:" << _TargetPosi.x;
-//    qDebug() << "TargetYposi:" << _TargetPosi.y;
-//    qDebug() << "TargetZposi:" << _TargetPosi.z;
+    _targetPosi.x = _lensInfo.focus * cos(_lensInfo.tilt/180*M_PI) * cos(_lensInfo.pan/180*M_PI);
+    _targetPosi.y = _lensInfo.focus * cos(_lensInfo.tilt/180*M_PI) * sin(_lensInfo.pan/180*M_PI);
+    _targetPosi.z = _lensInfo.focus * sin(_lensInfo.tilt/180*M_PI);
+//    qDebug() << "TargetXposi:" << _targetPosi.x;
+//    qDebug() << "TargetYposi:" << _targetPosi.y;
+//    qDebug() << "TargetZposi:" << _targetPosi.z;
     return true;
 }
 

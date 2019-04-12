@@ -5,25 +5,47 @@
 #include "godzilla.h"
 
 #define _USE_MATH_DEFINES
+
 #include <math.h>
 
-SubCam::SubCam(QObject *parent, const QString dest) : QObject (parent)
+SubCam::SubCam(QObject *parent, const QString dest, double x, double y, double z, double angle) : QObject (parent)
 {
     _tcp = new TcpSender(this, dest);
+    setSubCamPosi(x, y, z, angle);
+}
+
+/*          getSubCamLensInfo
+ * @brief   SubCamの現在のLensInfo（PTZF）のGetter
+ */
+LensInfo SubCam::getSubCamLensInfo()
+{
+    return _subCamLensInfo;
+}
+
+/*          getSubCamLensInfo
+ * @brief   SubCamの現在のLensInfo（PTZF）のGetter
+ * @param   x SubCamの位置　x座標
+ * @param   y SubCamの位置　y座標
+ * @param   z SubCamの位置　z座標
+ * @param   angle SubCamのカメラ自体の角度
+ */
+void SubCam::setSubCamPosi(double x, double y, double z, double angle)
+{
+    _subCamPosi.x = x;
+    _subCamPosi.y = y;
+    _subCamPosi.z = z;
+    _subCamPosi.angle = angle;
+    return;
 }
 
 /*          recvMainCamData
  * @param   mainCam MainCamのレンズ情報
  */
-void SubCam::recvMainCamData(LensInfo mainCam, Location TagetPosi)
+void SubCam::recvMainCamData(LensInfo mainCam, Location TargetPosi)
 {
     QByteArray tmp;
-    _mainCam = mainCam;
-    _TargetPosi = TagetPosi;
-
-    if(!calcSubCamPosi()) {
-        qDebug() << "Can't Calculate the Subcam Position.";
-    }
+    _mainCamLensInfo = mainCam;
+    _targetPosi = TargetPosi;
 
     if(!calcSubCamAngle()) {
         qDebug() << "Can't Calculate the Angle.";
@@ -40,20 +62,6 @@ void SubCam::recvMainCamData(LensInfo mainCam, Location TagetPosi)
     _tcp -> sendData(tmp);
 }
 
-/*          calcSubCamPosi
- * @brief   MainCamのPTZ値、被写体との距離を算出
- * @param
- * @return  正常終了 true, 異常終了 false
- */
-bool SubCam::calcSubCamPosi()//単位はmm
-{
-    _SubcamPosi.x = 0;//本来はキャリブレーションで求める
-    _SubcamPosi.y = 1000;
-    _SubcamPosi.z = 0;
-    _SubcamPosi.angle = 0;
-    return true;
-}
-
 /*          calcSubCamAngle
  * @brief   MainCamのPTZ値、被写体との距離からSubCamの角度を算出
  * @param
@@ -63,39 +71,39 @@ bool SubCam::calcSubCamAngle()
 {
     double temppan, temptilt;
     //panの計算
-    temppan = atan((_TargetPosi.y - _SubcamPosi.y)/(_TargetPosi.x - _SubcamPosi.x));
-    if(_TargetPosi.x >= _SubcamPosi.x){
-        _subCam.pan = 180/M_PI*temppan;
+    temppan = atan((_targetPosi.y - _subCamPosi.y)/(_targetPosi.x - _subCamPosi.x));
+    if(_targetPosi.x >= _subCamPosi.x){
+        _subCamLensInfo.pan = 180/M_PI*temppan;
     }else{
         if(temppan>=0){
-            _subCam.pan = 180/M_PI*temppan - 180;
+            _subCamLensInfo.pan = 180/M_PI*temppan - 180;
         }else{
-            _subCam.pan = 180/M_PI*temppan + 180;
+            _subCamLensInfo.pan = 180/M_PI*temppan + 180;
         }
     }
-    _subCam.pan = _subCam.pan - _SubcamPosi.angle;
-	if( _subCam.pan > 180 ){
-		_subCam.pan = _subCam.pan - 360;
-	}else if( _subCam.pan < -180 ){
-		_subCam.pan = _subCam.pan + 360;
+    _subCamLensInfo.pan = _subCamLensInfo.pan - _subCamPosi.angle;
+    if( _subCamLensInfo.pan > 180 ){
+        _subCamLensInfo.pan = _subCamLensInfo.pan - 360;
+    }else if( _subCamLensInfo.pan < -180 ){
+        _subCamLensInfo.pan = _subCamLensInfo.pan + 360;
 	}
     //tiltの計算
-    temptilt = atan((_TargetPosi.z - _SubcamPosi.z)/sqrt(pow(_TargetPosi.y - _SubcamPosi.y, 2)+pow(_TargetPosi.x - _SubcamPosi.x, 2)));
-    _subCam.tilt = 180/M_PI*temptilt;
-/*    if( _TargetPosi.x >= _SubcamPosi.x ){//Todo:1対1対応しない問題
-        _subCam.tilt = 180/M_PI*temptilt;
+    temptilt = atan((_targetPosi.z - _subCamPosi.z)/sqrt(pow(_targetPosi.y - _subCamPosi.y, 2)+pow(_targetPosi.x - _subCamPosi.x, 2)));
+    _subCamLensInfo.tilt = 180/M_PI*temptilt;
+/*    if( _targetPosi.x >= _subCamPosi.x ){//Todo:1対1対応しない問題
+        _subCamLensInfo.tilt = 180/M_PI*temptilt;
     }else{
-        _subCam.tilt = 180/M_PI*temptilt + 180;
+        _subCamLensInfo.tilt = 180/M_PI*temptilt + 180;
     }*/
 
     //画角の計算
     double len_subcam_taget;
-    len_subcam_taget = sqrt(pow(_TargetPosi.y - _SubcamPosi.y, 2)+pow(_TargetPosi.x - _SubcamPosi.x, 2)+pow(_TargetPosi.z - _SubcamPosi.z, 2));
-    _subCam.zoom = 180/M_PI*(2*asin(_mainCam.focus * sin(_mainCam.zoom/180*M_PI/2) / len_subcam_taget));
+    len_subcam_taget = sqrt(pow(_targetPosi.y - _subCamPosi.y, 2)+pow(_targetPosi.x - _subCamPosi.x, 2)+pow(_targetPosi.z - _subCamPosi.z, 2));
+    _subCamLensInfo.zoom = 180/M_PI*(2*asin(_mainCamLensInfo.focus * sin(_mainCamLensInfo.zoom/180*M_PI/2) / len_subcam_taget));
 
-    qDebug() << "rad(pan):" << _subCam.pan;
-    qDebug() << "rad(tilt):" << _subCam.tilt;
-    qDebug() << "rad(zoom):" << _subCam.zoom;
+    qDebug() << "rad(pan):" << _subCamLensInfo.pan;
+    qDebug() << "rad(tilt):" << _subCamLensInfo.tilt;
+    qDebug() << "rad(zoom):" << _subCamLensInfo.zoom;
     return true;
 }
 
@@ -106,14 +114,14 @@ bool SubCam::calcSubCamAngle()
  */
 bool SubCam::calcSubCamPTZ()
 {
-    _subcam_AWpan = static_cast<unsigned short>((0xF8D4-(_subCam.pan+175)*182)/0xF8D4*0xA5EC+0x2D09);//UE150の計算式
-    _subcam_AWtilt = static_cast<unsigned short>((0xAAA0-(_subCam.tilt+30)*182)/0xAAA0*0x71C7+0x1C71);//UE150の計算式
+    _subCam_AWpan = static_cast<unsigned short>((0xF8D4-(_subCamLensInfo.pan+175)*182)/0xF8D4*0xA5EC+0x2D09);//UE150の計算式
+    _subCam_AWtilt = static_cast<unsigned short>((0xAAA0-(_subCamLensInfo.tilt+30)*182)/0xAAA0*0x71C7+0x1C71);//UE150の計算式
     for(int cnt=0; cnt<ZOOM_TABLE_SIZE; cnt++){
-        if( table_Zoom_Angle[cnt][1] <= _subCam.zoom ){
-            _subcam_AWzoom =static_cast<unsigned short>(table_Zoom_Angle[cnt][0]);
+        if( table_Zoom_Angle[cnt][1] <= _subCamLensInfo.zoom ){
+            _subCam_AWzoom =static_cast<unsigned short>(table_Zoom_Angle[cnt][0]);
             break;
-        }else if( _subCam.zoom <= table_Zoom_Angle[ZOOM_TABLE_SIZE-1][1]){
-            _subcam_AWzoom = 0xFFF;
+        }else if( _subCamLensInfo.zoom <= table_Zoom_Angle[ZOOM_TABLE_SIZE-1][1]){
+            _subCam_AWzoom = 0xFFF;
         }
     }
 
@@ -128,10 +136,10 @@ bool SubCam::calcSubCamPTZ()
 {
     QByteArray temp1, temp2, temp3, temp4;
     temp1 = "aw_ptz?cmd=%23APC";
-    if(!num2ascii( _subcam_AWpan, temp2, 4 )){
+    if(!num2ascii( _subCam_AWpan, temp2, 4 )){
         qDebug() << "ASCII Exchange Error";
     }
-    if(!num2ascii( _subcam_AWtilt, temp3, 4 )){
+    if(!num2ascii( _subCam_AWtilt, temp3, 4 )){
         qDebug() << "ASCII Exchange Error";
     }
     temp4 = "&res=1";
@@ -148,7 +156,7 @@ bool SubCam::calcSubCamPTZ()
 {
     QByteArray temp1, temp2, temp3;
     temp1 = "aw_ptz?cmd=%23AXZ";
-    if(!num2ascii( _subcam_AWzoom, temp2, 3 )){
+    if(!num2ascii( _subCam_AWzoom, temp2, 3 )){
         qDebug() << "ASCII Exchange Error";
     }
     temp3 = "&res=1";

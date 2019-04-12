@@ -11,7 +11,14 @@ class SubCam : public QObject
     Q_OBJECT
 
 public:
-    explicit SubCam(QObject *parent = nullptr, const QString dest = "192.168.0.10");
+    explicit SubCam(QObject *parent = nullptr,
+                    const QString dest = "192.168.0.10",
+                    double x = 0,
+                    double y = 1000,
+                    double z = 0,
+                    double angle = 0);
+    LensInfo getSubCamLensInfo();
+    void setSubCamPosi(double x, double y, double z, double angle);
     void recvMainCamData(const LensInfo mainCam, const Location TagetPosi);
 
 signals:
@@ -20,19 +27,18 @@ public slots:
 
 private:
     TcpSender *_tcp;
-    LensInfo _mainCam;
-    LensInfo _subCam;
-    int _angle; //TODO:型修正（適切な型が分からなかったのでとりあえず全部int（六車））
+    LensInfo _mainCamLensInfo;
+    LensInfo _subCamLensInfo;
+//    int _angle; //TODO:型修正（適切な型が分からなかったのでとりあえず全部int（六車））
     QByteArray _cmd;
-    Location   _TargetPosi;
-    Location   _SubcamPosi;
-    unsigned short _subcam_AWpan;
-    unsigned short _subcam_AWtilt;
-    unsigned short _subcam_AWzoom;
+    Location   _targetPosi;
+    Location   _subCamPosi;
+    unsigned short _subCam_AWpan;
+    unsigned short _subCam_AWtilt;
+    unsigned short _subCam_AWzoom;
 
     bool calcSubCamAngle();
     bool calcSubCamPTZ();
-    bool calcSubCamPosi();
     QByteArray createCmdStrAPC();
     QByteArray createCmdStrAXZ();
     bool num2ascii(unsigned int num, QByteArray &array, int length);

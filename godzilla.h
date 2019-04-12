@@ -13,6 +13,7 @@ class Godzilla : public QObject
     Q_OBJECT
 public:
     explicit Godzilla(QObject *parent = nullptr);
+    LensInfo getMainCamLensInfo();
     Q_INVOKABLE void createUdpSocket(const quint16 port = 1234);
     Q_INVOKABLE void addSubCam(const QString ipaddr);
     void recvUpdateNotice(QByteArray recvData);
@@ -22,7 +23,7 @@ private:
     UdpReciever *_udp;
     QVector<SubCam*> _subcam;
     LensInfo   _lensInfo;
-    Location   _TargetPosi;
+    Location   _targetPosi;
 
     bool parseUpdateNotice(QByteArray recvData);
     bool calcDistFromFucus(unsigned short awFocus);

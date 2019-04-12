@@ -33,16 +33,15 @@ void SubCam::recvMainCamData(LensInfo mainCam, Location TagetPosi)
         qDebug() << "Can't Calculate the PTZ Value.";
     }
 
-    tmp = createCmdStrAPC(); // テスト用 // 削除予定
-    _tcp -> sendData(tmp); // テスト用 // 削除予定
+    tmp = createCmdStrAPC();
+    _tcp -> sendData(tmp);
 
-    _tcp->doConnect(); // デバッグ用にここに処理追加
-    tmp = createCmdStrAXZ(); // テスト用 // 削除予定
-    _tcp -> sendData(tmp); // テスト用 // 削除予定
+    tmp = createCmdStrAXZ();
+    _tcp -> sendData(tmp);
 }
 
-/*          calcSubCamAngle
- * @brief   MainCamのPTZ値、被写体との距離からSubCamの角度を算出
+/*          calcSubCamPosi
+ * @brief   MainCamのPTZ値、被写体との距離を算出
  * @param
  * @return  正常終了 true, 異常終了 false
  */

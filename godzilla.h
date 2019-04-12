@@ -15,7 +15,7 @@ public:
     explicit Godzilla(QObject *parent = nullptr);
     LensInfo getMainCamLensInfo();
     Q_INVOKABLE void createUdpSocket(const quint16 port = 1234);
-    Q_INVOKABLE void addSubCam(const QString ipaddr);
+    Q_INVOKABLE void addSubCam(const QString ipaddr, double x, double y, double z, double angle);
     void recvUpdateNotice(QByteArray recvData);
 
 private:

@@ -35,9 +35,9 @@ Q_INVOKABLE void Godzilla::createUdpSocket(const quint16 port)
 /*          addSubCam
  * @param   ipaddr 追加するSubCamのIPアドレス
  */
-Q_INVOKABLE void Godzilla::addSubCam(const QString ipaddr)
+Q_INVOKABLE void Godzilla::addSubCam(const QString ipaddr, double x, double y, double z, double angle)
 {
-    _subcam.append(new SubCam(this, ipaddr));
+    _subcam.append(new SubCam(this, ipaddr, x, y, z, angle));
     qDebug() << "ip="<<ipaddr;
 }
 

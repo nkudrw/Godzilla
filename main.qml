@@ -162,7 +162,7 @@ ApplicationWindow {
             id: subcam_angle
             width: 68
             height: 40
-            text: qsTr("")
+            text: qsTr("0")
             horizontalAlignment: Text.AlignHCenter
             placeholderText: ""
         }
@@ -243,8 +243,9 @@ ApplicationWindow {
         focusPolicy: Qt.TabFocus
         onClicked: {
             god.createUdpSocket(port.text);
-            god.addSubCam(ipAddress.text, subcam_x.text, subcam_y.text, subcam_z.text, subcam_angle);
+            god.addSubCam(ipAddress.text, subcam_x.text, subcam_y.text, subcam_z.text, subcam_angle.text);
         }
+
     }
 
 

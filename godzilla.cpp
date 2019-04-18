@@ -17,7 +17,7 @@ Godzilla::Godzilla(QObject *parent) : QObject(parent)
 /*          getMainCamLensInfo
  * @brief   MainCamの現在のLensInfo（PTZF）のGetter
  */
-Q_INVOKABLE LensInfo Godzilla::getMainCamLensInfo()
+LensInfo Godzilla::getMainCamLensInfo()
 {
     return _lensInfo;
 }
@@ -71,6 +71,13 @@ void Godzilla::recvUpdateNotice(QByteArray recvData)
     }
 }
 
+/*          getTargetPosiInfo
+ * @brief   TargetPosiのGetter
+ */
+ Location Godzilla::getTargetPosiInfo(){
+    return _targetPosi;
+}
+
 /*          parseUpdateNotice
  * @brief   更新通知の解析（文字列の解析と、データ変換）
  * @param   recvData MainCamの更新通知データ（解析前）
@@ -91,6 +98,7 @@ bool Godzilla::parseUpdateNotice(QByteArray recvData)
     _lensInfo.tilt = double(temp_tilt)/0x00008000;//Free-Dの値を角度(°)へ変換
     _lensInfo.zoom = temp_zoom;//とりあえず使わないので放置
 
+    emit lensInfoChanged();//UI側にレンズ情報の更新を通知
 
     if(!calcDistFromFucus( temp_focus )) {
         qDebug() << "Can't Calculate the Distance from Focus Value.";
@@ -161,6 +169,7 @@ bool Godzilla::calcTargetPosi()
 //    qDebug() << "TargetXposi:" << _targetPosi.x;
 //    qDebug() << "TargetYposi:" << _targetPosi.y;
 //    qDebug() << "TargetZposi:" << _targetPosi.z;
+    emit targetInfoChanged();
     return true;
 }
 
@@ -180,3 +189,4 @@ bool Godzilla::calcZoomAngle(unsigned short awZoom)
     _lensInfo.zoom	= table_Zoom_Angle[ZOOM_TABLE_SIZE-1][1];
     return true;
 }
+

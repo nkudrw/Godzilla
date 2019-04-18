@@ -11,13 +11,20 @@
 class Godzilla : public QObject
 {
     Q_OBJECT
+
 public:
+    Q_PROPERTY(LensInfo _lensinfo READ getMainCamLensInfo NOTIFY lensInfoChanged)
+    Q_PROPERTY(Location _targetPosi READ getTargetPosiInfo NOTIFY targetInfoChanged)
+   // Q_PROPERTY(LensInfo _subcam READ getSubCamLensInfo NOTIFY subCamInfoChanged)
+
     explicit Godzilla(QObject *parent = nullptr);
     LensInfo getMainCamLensInfo();
     Q_INVOKABLE void createUdpSocket(const quint16 port = 1234);
     Q_INVOKABLE void addSubCam(const QString ipaddr, double x, double y, double z, double angle);
-    LensInfo getSubCamLensInfo(int camNum);
+    Q_INVOKABLE LensInfo getSubCamLensInfo(int camNum);
     void recvUpdateNotice(QByteArray recvData);
+    Location getTargetPosiInfo();
+
 
 private:
     QByteArray _mainCamPTZData; // 受信したMainCamのPTZデータ
@@ -31,7 +38,14 @@ private:
     bool calcTargetPosi();
     bool calcZoomAngle(unsigned short awZoom);
 
+signals:
+    void lensInfoChanged();
+    void targetInfoChanged();
+    //void subCamInfoChanged();
+
 };
+
+//Q_DECLARE_METATYPE(Godzilla)
 
 /* C101用被写体距離テーブル*/
 #define TABLE_FOCUST_DIST_MAX_C101	17

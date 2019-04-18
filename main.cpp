@@ -11,13 +11,19 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
 
-    QQmlApplicationEngine engine;
-    engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
-    if (engine.rootObjects().isEmpty())
+    QQmlApplicationEngine engineMain;
+    engineMain.load(QUrl(QStringLiteral("qrc:/main.qml")));
+    if (engineMain.rootObjects().isEmpty())
+        return -1;
+
+    QQmlApplicationEngine engineDebug;
+    engineDebug.load(QUrl(QStringLiteral("qrc:/debug.qml")));
+    if (engineDebug.rootObjects().isEmpty())
         return -1;
 
     Godzilla *god = new Godzilla();
-    engine.rootContext()->setContextProperty("god", god); //QML側にクラスをセット
+    engineMain.rootContext()->setContextProperty("god", god); //QML側にクラスをセット
+    engineDebug.rootContext()->setContextProperty("god", god); //QML側にクラスをセット
     //god->createUdpSocket(1234); // 引数として受信ポート番号を指定
     //god->addSubCam("192.168.0.32"); // 引数として送信先IPアドレスを指定
 
